@@ -532,6 +532,17 @@
     if (c) { var s = 600; timer = setInterval(function () { s--; if (s < 0) { clearInterval(timer); return; } var el = $('#contador'); if (!el) { clearInterval(timer); return; } el.textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }, 1000); }
   }
 
+  // ---------- contagem de visitas (GoatCounter) ----------
+  // Conta cada tela do protótipo como uma página. A placa digitada nunca é enviada.
+  function contar(rota) {
+    var caminho = '/prototipo/' + (rota || 'inicio');
+    var tentativas = 0;
+    (function enviar() {
+      if (window.goatcounter && window.goatcounter.count) { try { window.goatcounter.count({ path: caminho, title: 'Protótipo: ' + (rota || 'início') }); } catch (e) {} return; }
+      if (++tentativas < 20) setTimeout(enviar, 300);
+    })();
+  }
+
   // ---------- roteador ----------
   function render() {
     var h = location.hash || '#/'; var partes = h.slice(2).split('?'); var caminho = partes[0].split('/'); var params = {};
@@ -555,7 +566,7 @@
       default: html = pNaoEncontrado();
     }
     if (html === '') return;
-    topo(); $('#app').innerHTML = html; ligar(params);
+    topo(); $('#app').innerHTML = html; ligar(params); contar(r);
     if (r !== 'como-funciona') window.scrollTo(0, 0);
   }
   window.addEventListener('hashchange', render);
