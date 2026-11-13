@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Placa Aberta | Em breve</title>
+<meta name="description" content="Placa Aberta: consulte um veículo pela placa e veja multas, débitos, restrições e histórico em um só lugar. Em breve para Android, iPhone e web.">
+<meta name="theme-color" content="#0C1613">
+<meta property="og:title" content="Placa Aberta | Em breve">
+<meta property="og:description" content="Aponte a câmera para a placa e veja a ficha completa do veículo. Em breve.">
+<meta property="og:url" content="https://placaaberta.com.br/">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@500&family=Sora:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fundo:#0C1613; --fundo2:#10201B; --texto:#E8F0EC; --suave:#9DB3AA; --apagado:#5F7A70;
+    --verde:#7FD1AE; --linha:rgba(127,209,174,.14); --vidro:rgba(255,255,255,.035);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--fundo); color:var(--texto);
+    font-family:Inter,system-ui,sans-serif; line-height:1.55;
+    min-height:100vh; display:flex; flex-direction:column; overflow-x:hidden;
+  }
+  .brilho{position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(60vmax 45vmax at 85% -10%, rgba(127,209,174,.16), transparent 60%),
+      radial-gradient(50vmax 40vmax at -10% 110%, rgba(29,59,92,.35), transparent 60%);}
+  .grade{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;
+    background-image:linear-gradient(var(--linha) 1px,transparent 1px),linear-gradient(90deg,var(--linha) 1px,transparent 1px);
+    background-size:56px 56px;
+    mask-image:radial-gradient(ellipse at 50% 40%,#000 0%,transparent 70%);
+    -webkit-mask-image:radial-gradient(ellipse at 50% 40%,#000 0%,transparent 70%);}
+  header,main,footer{position:relative;z-index:1}
+  header{padding:28px clamp(20px,5vw,56px);display:flex;align-items:center;gap:12px}
+  .marca{font-family:Sora,sans-serif;font-weight:600;font-size:20px;letter-spacing:-.01em}
+  .marca span{color:var(--verde)}
+  main{flex:1;display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(32px,6vw,96px);
+    align-items:center;padding:24px clamp(20px,5vw,56px) 56px;max-width:1240px;width:100%;margin:0 auto}
+  .selo{display:inline-flex;align-items:center;gap:10px;padding:7px 14px 7px 10px;border-radius:999px;
+    border:1px solid var(--linha);background:var(--vidro);font-size:13px;color:var(--suave);margin-bottom:28px}
+  .ponto{width:8px;height:8px;border-radius:50%;background:var(--verde);box-shadow:0 0 0 0 rgba(127,209,174,.6);animation:pulso 2.2s infinite}
+  @keyframes pulso{0%{box-shadow:0 0 0 0 rgba(127,209,174,.55)}70%{box-shadow:0 0 0 10px rgba(127,209,174,0)}100%{box-shadow:0 0 0 0 rgba(127,209,174,0)}}
+  h1{font-family:Sora,sans-serif;font-weight:600;font-size:clamp(38px,5.6vw,68px);line-height:1.04;letter-spacing:-.03em;max-width:13ch}
+  h1 em{font-style:normal;color:var(--verde)}
+  .sub{margin-top:22px;font-size:clamp(16px,1.6vw,19px);color:var(--suave);max-width:46ch}
+  .lista{margin-top:36px;display:grid;gap:14px;max-width:480px}
+  .item{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:16px;border:1px solid var(--linha);background:var(--vidro);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--verde);padding-top:3px;min-width:22px}
+  .item b{display:block;font-weight:500;font-size:15px}
+  .item small{display:block;color:var(--suave);font-size:14px;margin-top:2px}
+  .plataformas{margin-top:32px;font-size:13px;color:var(--apagado);letter-spacing:.02em}
+  .plataformas strong{color:var(--suave);font-weight:500}
+
+  /* cena da placa */
+  .cena{position:relative;aspect-ratio:1/1;max-width:440px;width:100%;justify-self:center}
+  .visor{position:absolute;inset:0}
+  .canto{position:absolute;width:22%;height:22%;border:5px solid var(--verde);opacity:.95}
+  .c1{top:0;left:0;border-right:0;border-bottom:0;border-radius:26px 0 0 0}
+  .c2{top:0;right:0;border-left:0;border-bottom:0;border-radius:0 26px 0 0}
+  .c3{bottom:0;left:0;border-right:0;border-top:0;border-radius:0 0 0 26px}
+  .c4{bottom:0;right:0;border-left:0;border-top:0;border-radius:0 0 26px 0}
+  .placa{position:absolute;left:15%;right:15%;top:31%;height:38%;border-radius:14px;background:#F4F7F5;overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08) inset;display:flex;flex-direction:column}
+  .faixa{height:24%;background:#1D3B5C;display:flex;align-items:center;justify-content:space-between;padding:0 6%;
+    color:#E8F0EC;font-family:Inter,sans-serif;font-size:clamp(8px,1.1vw,11px);letter-spacing:.18em;font-weight:500}
+  .faixa i{width:16px;height:11px;border-radius:2px;background:linear-gradient(#2E8B57 0 50%,#F2C94C 50% 100%);display:block}
+  .chars{flex:1;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:500;
+    color:#0C1613;font-size:clamp(30px,4.6vw,52px);letter-spacing:.08em}
+  .scan{position:absolute;left:8%;right:8%;height:4px;border-radius:4px;background:var(--verde);
+    box-shadow:0 0 18px 4px rgba(127,209,174,.55);top:30%;animation:scan 3.2s ease-in-out infinite}
+  @keyframes scan{0%,100%{top:31%}50%{top:68%}}
+  .leitura{position:absolute;left:50%;transform:translateX(-50%);bottom:-8%;white-space:nowrap;
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--suave);padding:8px 14px;border-radius:999px;
+    border:1px solid var(--linha);background:rgba(16,32,27,.85)}
+  .leitura span{color:var(--verde)}
+
+  footer{padding:22px clamp(20px,5vw,56px) 30px;border-top:1px solid var(--linha);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:13px;color:var(--apagado)}
+
+  @media (max-width:860px){
+    main{grid-template-columns:1fr;padding-top:8px}
+    .cena{order:-1;max-width:300px;margin-bottom:12px}
+    h1{max-width:none}
+  }
+  @media (prefers-reduced-motion:reduce){.scan,.ponto{animation:none}}
+</style>
+</head>
+<body>
+<div class="brilho"></div><div class="grade"></div>
+
+<header>
+  <svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true"><path d="M8 30 V18 Q8 10 16 10 H28" fill="none" stroke="#7FD1AE" stroke-width="7" stroke-linecap="round"/><path d="M92 30 V18 Q92 10 84 10 H72" fill="none" stroke="#7FD1AE" stroke-width="7" stroke-linecap="round"/><path d="M8 70 V82 Q8 90 16 90 H28" fill="none" stroke="#7FD1AE" stroke-width="7" stroke-linecap="round"/><path d="M92 70 V82 Q92 90 84 90 H72" fill="none" stroke="#7FD1AE" stroke-width="7" stroke-linecap="round"/><rect x="22" y="33" width="56" height="34" rx="6" fill="#F4F7F5"/><rect x="22" y="33" width="56" height="9" rx="5" fill="#1D3B5C"/><rect x="22" y="38" width="56" height="4" fill="#1D3B5C"/><rect x="29" y="48" width="5" height="12" rx="1.5" fill="#0C1613"/><rect x="37" y="48" width="9" height="12" rx="1.5" fill="#0C1613"/><rect x="54" y="48" width="9" height="12" rx="1.5" fill="#0C1613"/><rect x="66" y="48" width="5" height="12" rx="1.5" fill="#0C1613"/><rect x="14" y="53" width="72" height="3" rx="1.5" fill="#7FD1AE"/></svg>
+  <div class="marca">placa<span>aberta</span></div>
+</header>
+
+<main>
+  <section>
+    <div class="selo"><span class="ponto"></span>Em construção. Chega em breve.</div>
+    <h1>Aponte para a placa. <em>Veja tudo</em> sobre o veículo.</h1>
+    <p class="sub">Multas, débitos, restrições e histórico reunidos em uma ficha clara, para você comprar, vender ou cuidar do seu carro sem surpresa.</p>
+
+    <div class="lista">
+      <div class="item"><span class="num">01</span><div><b>Leitura pela câmera</b><small>A placa é reconhecida na hora, sem digitar nada.</small></div></div>
+      <div class="item"><span class="num">02</span><div><b>Ficha completa e fácil de ler</b><small>Situação, multas por origem e o que está em aberto.</small></div></div>
+      <div class="item"><span class="num">03</span><div><b>Monitoramento do seu veículo</b><small>Aviso quando aparecer multa nova ou mudar alguma restrição.</small></div></div>
+    </div>
+
+    <p class="plataformas">Disponível em breve para <strong>Android</strong>, <strong>iPhone</strong> e <strong>web</strong>.</p>
+  </section>
+
+  <div class="cena" aria-hidden="true">
+    <div class="visor"><i class="canto c1"></i><i class="canto c2"></i><i class="canto c3"></i><i class="canto c4"></i></div>
+    <div class="placa">
+      <div class="faixa"><span>BRASIL</span><i></i></div>
+      <div class="chars">ABR1A26</div>
+    </div>
+    <div class="scan"></div>
+    <div class="leitura">lendo placa <span>ABR1A26</span></div>
+  </div>
+</main>
+
+<footer>
+  <span>&copy; 2026 Placa Aberta</span>
+  <span>Serviço independente, sem vínculo com órgãos de trânsito.</span>
+</footer>
+</body>
+</html>
